@@ -24,11 +24,9 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       title: 'Ayna',
-      home: SafeArea(
-        child: CameraScreen(
-          // Pass the appropriate camera to the TakePictureScreen widget.
-          camera: firstCamera,
-        ),
+      home: CameraScreen(
+        // Pass the appropriate camera to the TakePictureScreen widget.
+        camera: firstCamera,
       ),
     );
   }
@@ -61,6 +59,8 @@ class CameraScreenState extends State<CameraScreen> {
       widget.camera,
       // Define the resolution to use.
       ResolutionPreset.medium,
+      // Disable audio
+      enableAudio: false,
     );
 
     // Next, initialize the controller. This returns a Future.
@@ -76,6 +76,8 @@ class CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
@@ -85,7 +87,24 @@ class CameraScreenState extends State<CameraScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
+            return SizedBox(
+              width: width,
+              height: height,
+              child: ClipRect(
+                child: OverflowBox(
+                  alignment: Alignment.center,
+                  child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: SizedBox(
+                      width: width,
+                      height: height / _controller.value.aspectRatio,
+                      child: CameraPreview(
+                          _controller), // this is my CameraPreview
+                    ),
+                  ),
+                ),
+              ),
+            );
           } else {
             // Otherwise, display a loading indicator.
             return const Center(child: CircularProgressIndicator());
