@@ -58,7 +58,7 @@ class CameraScreenState extends State<CameraScreen> {
       // Get a specific camera from the list of available cameras.
       widget.camera,
       // Define the resolution to use.
-      ResolutionPreset.medium,
+      ResolutionPreset.high,
       // Disable audio
       enableAudio: false,
     );
@@ -76,8 +76,7 @@ class CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
@@ -88,23 +87,13 @@ class CameraScreenState extends State<CameraScreen> {
           if (snapshot.connectionState == ConnectionState.done) {
             // If the Future is complete, display the preview.
             return SizedBox(
-              width: width,
-              height: height,
-              child: ClipRect(
-                child: OverflowBox(
-                  alignment: Alignment.center,
-                  child: FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: SizedBox(
-                      width: width,
-                      height: height / _controller.value.aspectRatio,
-                      child: CameraPreview(
-                          _controller), // this is my CameraPreview
-                    ),
-                  ),
-                ),
-              ),
-            );
+                width: size.width,
+                height: size.height,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                      width: size.width, child: CameraPreview(_controller)),
+                ));
           } else {
             // Otherwise, display a loading indicator.
             return const Center(child: CircularProgressIndicator());
