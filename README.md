@@ -1,3 +1,3 @@
 # ayna
 
-Just a simple app for using phone like a mirror.
+Just a simple app for using your phone as a mirror.
